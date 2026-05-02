@@ -24,6 +24,10 @@
   </head>
 
   <body>
+    <nav>
+      <%= link_to "Home", new_link_path %> |
+      <%= link_to "Reports", reports_path %>
+    </nav>
     <%= yield %>
   </body>
 </html>

@@ -1,0 +1,45 @@
+<h1>Global Report</h1>
+
+<p>Total clicks: <%= @total_clicks %></p>
+
+<% if @total_clicks == 0 %>
+  <p>No visits yet.</p>
+<% else %>
+  <h2>Top Links</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Slug</th>
+        <th>Target URL</th>
+        <th>Clicks</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @top_links.each do |link| %>
+        <tr>
+          <td><%= link.slug %></td>
+          <td><%= link.target_url %></td>
+          <td><%= link.click_count %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2>Top Countries</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Country</th>
+        <th>Visits</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @top_countries.each do |country, count| %>
+        <tr>
+          <td><%= country || "Unknown" %></td>
+          <td><%= count %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
