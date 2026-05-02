@@ -1,14 +1,27 @@
-<h1>Short URL Created</h1>
+<h1 class="text-2xl font-bold mb-6">Short URL Created</h1>
 
-<dl>
-  <dt>Short URL</dt>
-  <dd><%= link_to short_url_redirect_url(slug: @short_url.slug), short_url_redirect_url(slug: @short_url.slug) %></dd>
+<div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 max-w-lg space-y-4">
+  <div>
+    <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Short URL</p>
+    <p class="mt-1 text-sm font-mono break-all">
+      <%= link_to short_url_redirect_url(slug: @short_url.slug),
+            short_url_redirect_url(slug: @short_url.slug),
+            class: "text-indigo-600 hover:underline" %>
+    </p>
+  </div>
 
-  <dt>Target URL</dt>
-  <dd><%= @short_url.target_url %></dd>
+  <div>
+    <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Target URL</p>
+    <p class="mt-1 text-sm break-all"><%= @short_url.target_url %></p>
+  </div>
 
-  <dt>Title</dt>
-  <dd><%= @short_url.title %></dd>
-</dl>
+  <div>
+    <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Page Title</p>
+    <p class="mt-1 text-sm"><%= @short_url.title %></p>
+  </div>
+</div>
 
-<%= link_to "Shorten another", new_link_path %>
+<div class="mt-6">
+  <%= link_to "Shorten another URL", new_link_path,
+        class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700" %>
+</div>

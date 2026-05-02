@@ -1,20 +1,23 @@
-<h1>Shorten a URL</h1>
+<h1 class="text-2xl font-bold mb-6">Shorten a URL</h1>
 
-<%= form_with model: @short_url, url: links_path do |f| %>
-  <% if @short_url.errors.any? %>
-    <div id="error_explanation">
-      <ul>
-        <% @short_url.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+<%= form_with model: @short_url, url: links_path, class: "space-y-4 max-w-lg" do |f| %>
   <div>
-    <%= f.label :target_url, "URL to shorten" %>
-    <%= f.url_field :target_url, required: true, placeholder: "https://example.com" %>
+    <%= f.label :target_url, "URL to shorten", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.url_field :target_url,
+          required: true,
+          placeholder: "https://example.com",
+          class: "block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" %>
+    <% if @short_url.errors[:target_url].any? %>
+      <% @short_url.errors[:target_url].each do |msg| %>
+        <p class="field-error mt-1 text-sm text-red-600"><%= msg %></p>
+      <% end %>
+    <% end %>
+    <% if @short_url.errors[:base].any? %>
+      <% @short_url.errors[:base].each do |msg| %>
+        <p class="field-error mt-1 text-sm text-red-600"><%= msg %></p>
+      <% end %>
+    <% end %>
   </div>
 
-  <%= f.submit "Shorten" %>
+  <%= f.submit "Shorten", class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 cursor-pointer" %>
 <% end %>

@@ -1,39 +1,45 @@
-<h1>Stats for <%= @short_url.slug %></h1>
+<h1 class="text-2xl font-bold mb-2">Stats: <span class="font-mono"><%= @short_url.slug %></span></h1>
 
-<dl>
-  <dt>Short URL</dt>
-  <dd><%= short_url_redirect_url(slug: @short_url.slug) %></dd>
+<div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 max-w-lg space-y-3 mb-8">
+  <div>
+    <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Short URL</p>
+    <p class="mt-1 text-sm font-mono break-all"><%= short_url_redirect_url(slug: @short_url.slug) %></p>
+  </div>
+  <div>
+    <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Target URL</p>
+    <p class="mt-1 text-sm break-all"><%= @short_url.target_url %></p>
+  </div>
+  <div>
+    <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Page Title</p>
+    <p class="mt-1 text-sm"><%= @short_url.title %></p>
+  </div>
+</div>
 
-  <dt>Target URL</dt>
-  <dd><%= @short_url.target_url %></dd>
-
-  <dt>Title</dt>
-  <dd><%= @short_url.title %></dd>
-</dl>
-
-<p>Total clicks: <%= @visits.count %></p>
+<p class="text-sm font-bold text-gray-700 mb-4">Total clicks: <%= @visits.count %></p>
 
 <% if @visits.any? %>
-  <table>
-    <thead>
-      <tr>
-        <th>Timestamp</th>
-        <th>IP Address</th>
-        <th>Country</th>
-        <th>City</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @visits.each do |visit| %>
+  <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-gray-50">
         <tr>
-          <td><%= visit.clicked_at %></td>
-          <td><%= visit.ip_address %></td>
-          <td><%= visit.country %></td>
-          <td><%= visit.city %></td>
+          <th class="px-4 py-3 text-left font-medium text-gray-600">Timestamp</th>
+          <th class="px-4 py-3 text-left font-medium text-gray-600">IP Address</th>
+          <th class="px-4 py-3 text-left font-medium text-gray-600">Country</th>
+          <th class="px-4 py-3 text-left font-medium text-gray-600">City</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        <% @visits.each do |visit| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3 text-gray-700 whitespace-nowrap"><%= visit.clicked_at.strftime("%Y-%m-%d %H:%M:%S UTC") %></td>
+            <td class="px-4 py-3 font-mono text-gray-700"><%= visit.ip_address %></td>
+            <td class="px-4 py-3 text-gray-700"><%= visit.country || "—" %></td>
+            <td class="px-4 py-3 text-gray-700"><%= visit.city || "—" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 <% else %>
-  <p>No visits yet.</p>
+  <p class="text-sm text-gray-500">No visits yet.</p>
 <% end %>

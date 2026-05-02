@@ -66,4 +66,17 @@ class LinksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match "No visits yet", response.body
   end
+
+  test "POST /links with invalid URL renders inline error, no top-level error_explanation block" do
+    post links_path, params: { short_url: { target_url: "javascript:alert(1)" } }
+    assert_response :unprocessable_entity
+    assert_select "#error_explanation", count: 0
+    assert_select ".field-error"
+  end
+
+  test "POST /links with invalid URL form has label associated with target_url field" do
+    post links_path, params: { short_url: { target_url: "" } }
+    assert_response :unprocessable_entity
+    assert_select "label[for='short_url_target_url']"
+  end
 end

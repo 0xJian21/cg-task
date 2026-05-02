@@ -36,3 +36,6 @@
 
 # MaxMind GeoLite2 database (not committed; obtain from maxmind.com)
 *.mmdb
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
