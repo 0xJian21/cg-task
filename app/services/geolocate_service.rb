@@ -1,5 +1,5 @@
 class GeolocateService
-  MMDB_PATH = Rails.root.join("GeoLite2-City.mmdb").to_s
+  MMDB_PATH = ENV.fetch("GEOIP_DB_PATH", Rails.root.join("GeoLite2-City.mmdb").to_s)
 
   def self.call(ip)
     new(ip).call
