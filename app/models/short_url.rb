@@ -1,6 +1,8 @@
 class ShortUrl < ApplicationRecord
   class SlugExhaustedError < StandardError; end
 
+  has_many :visits, dependent: :destroy
+
   MAX_SLUG_LENGTH = 15
   DEFAULT_SLUG_LENGTH = 6
   MAX_RETRIES = 5

@@ -11,6 +11,29 @@
   <dd><%= @short_url.title %></dd>
 </dl>
 
-<p>Total clicks: 0</p>
+<p>Total clicks: <%= @visits.count %></p>
 
-<p>No visits yet.</p>
+<% if @visits.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>IP Address</th>
+        <th>Country</th>
+        <th>City</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @visits.each do |visit| %>
+        <tr>
+          <td><%= visit.clicked_at %></td>
+          <td><%= visit.ip_address %></td>
+          <td><%= visit.country %></td>
+          <td><%= visit.city %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No visits yet.</p>
+<% end %>

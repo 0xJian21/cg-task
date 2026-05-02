@@ -28,6 +28,7 @@ class LinksController < ApplicationController
 
   def show
     @short_url = ShortUrl.find(params[:id])
+    @visits = @short_url.visits.order(clicked_at: :desc)
   end
 
   private
