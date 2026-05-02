@@ -1,0 +1,14 @@
+<h1>Short URL Created</h1>
+
+<dl>
+  <dt>Short URL</dt>
+  <dd><%= link_to short_url_redirect_url(slug: @short_url.slug), short_url_redirect_url(slug: @short_url.slug) %></dd>
+
+  <dt>Target URL</dt>
+  <dd><%= @short_url.target_url %></dd>
+
+  <dt>Title</dt>
+  <dd><%= @short_url.title %></dd>
+</dl>
+
+<%= link_to "Shorten another", new_link_path %>

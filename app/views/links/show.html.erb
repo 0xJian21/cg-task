@@ -1,0 +1,16 @@
+<h1>Stats for <%= @short_url.slug %></h1>
+
+<dl>
+  <dt>Short URL</dt>
+  <dd><%= short_url_redirect_url(slug: @short_url.slug) %></dd>
+
+  <dt>Target URL</dt>
+  <dd><%= @short_url.target_url %></dd>
+
+  <dt>Title</dt>
+  <dd><%= @short_url.title %></dd>
+</dl>
+
+<p>Total clicks: 0</p>
+
+<p>No visits yet.</p>
