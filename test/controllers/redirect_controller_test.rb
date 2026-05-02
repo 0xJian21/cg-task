@@ -1,6 +1,15 @@
 require "test_helper"
 
 class RedirectControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    @original_geo_call = GeolocateService.method(:call)
+    GeolocateService.define_singleton_method(:call) { |_ip| { country: nil, city: nil } }
+  end
+
+  teardown do
+    GeolocateService.define_singleton_method(:call, &@original_geo_call)
+  end
+
   test "GET /:slug with known slug redirects 302 to target_url" do
     su = ShortUrl.create!(slug: "abc123", target_url: "https://example.com", title: "Ex")
     get "/#{su.slug}"
@@ -26,5 +35,24 @@ class RedirectControllerTest < ActionDispatch::IntegrationTest
     assert_no_difference "Visit.count" do
       get "/zzz999"
     end
+  end
+
+  test "GET /:slug stores geo country and city on the visit" do
+    su = ShortUrl.create!(slug: "abc123", target_url: "https://example.com", title: "Ex")
+    stub_method(GeolocateService, :call, ->(_ip) { { country: "Germany", city: "Berlin" } }) do
+      get "/#{su.slug}"
+    end
+    visit = Visit.last
+    assert_equal "Germany", visit.country
+    assert_equal "Berlin", visit.city
+  end
+
+  test "GET /:slug still redirects when geo lookup returns nils" do
+    su = ShortUrl.create!(slug: "abc123", target_url: "https://example.com", title: "Ex")
+    get "/#{su.slug}"
+    assert_redirected_to "https://example.com"
+    visit = Visit.last
+    assert_nil visit.country
+    assert_nil visit.city
   end
 end

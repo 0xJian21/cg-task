@@ -33,3 +33,6 @@
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+
+# MaxMind GeoLite2 database (not committed; obtain from maxmind.com)
+*.mmdb
