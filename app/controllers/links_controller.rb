@@ -14,7 +14,7 @@ class LinksController < ApplicationController
       begin
         @short_url = ShortUrl.create_with_slug!(
           target_url: target_url,
-          title: "(title unavailable)"
+          title: TitleFetcherService.call(target_url)
         )
         render :create
       rescue ShortUrl::SlugExhaustedError
