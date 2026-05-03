@@ -1,47 +1,189 @@
-# CoinGecko Engineering Written Assignment - Url Shortener
+# CoinGecko Engineering Written Assignment — URL Shortener
 
-You are tasked to build a simple URL Shortener service as a microservice for a startup you recently joined.
+A URL shortener service built with Ruby on Rails 8.1. Submit a long URL, get a short link. Every click is tracked with geolocation, timestamp, and IP — visible on a per-link stats page and a global admin report.
 
-A URL Shortener service, similar to [bit.ly](https://bitly.com/) and [tinyurl.com](https://tinyurl.com/) is a service that maps a short-form URL (_"Short URL"_) to a user-provided target URL (_"Target URL"_).
+**Deployed URL:** https://136.113.169.29.sslip.io
 
-## Software Specifications
+---
 
-1. Your application is deployed with a web interface and a form field that accepts a Target URL.
-2. When the Target URL is shortened, the user is returned with a **Short URL**, the original **Target URL** and the **Title** tag of the Target URL.
-3. A Short URL can be publicly shared and accessed.
-4. A Short URL path can be in any URI pattern, but should not exceed a maximum of 15 characters
-5. Multiple Short URLs can share the same Target URL.
-6. You need to produce a simple usage report for the application. This report should track the **number of clicks**, **originating geolocation** and **timestamp** of each visit to a Short URL.
-7. You also need to publish a brief Wiki on your solution for short URL path. Explain the limitations and workarounds for your solution.
+## Installation
 
-## Scoring Guide
+### Prerequisites
 
-All submissions will be evaluated based on the following criteria:
+| Requirement | Version |
+|---|---|
+| Ruby | 4.0.3 |
+| Rails | 8.1.3 |
+| SQLite | 3.x |
+| Node.js | 18+ (for Tailwind CSS compilation) |
 
-- Completeness of solution including documentation and deployment
-- Test coverage and overall approach to automated testing including unit tests and integration tests.
-- Clean, understandable and proper version-control practices
-- A comfortable UI/UX for end users
+### Steps
 
-#### Extra Credit:
+```bash
+# 1. Clone the repo
+git clone https://github.com/0xJian21/cg-task.git
+cd cg-task
 
-L3 and above candidates will additionally be evaluated based one or more of the following criteria:
+# 2. Install Ruby dependencies
+bundle install
 
-- **Strategic design patterns** (e.g. [Service Objects](https://www.toptal.com/ruby-on-rails/rails-service-objects-tutorial), [Query Objects](https://martinfowler.com/eaaCatalog/queryObject.html), [Decorators](https://refactoring.guru/design-patterns/decorator))used in the solution to address extensibility, composability and other challenges.
-- **Error and edge-case handling** beyond the user [happy path](http://xunitpatterns.com/happy%20path.html).
-- **Scalability considerations** - what is the maximum number of short URLs or supported concurrency of the application?
-- **Security considerations** - is the solution susceptible to common web application vulnerabilities?
-- Implementation of advanced, refactorable UI design components using popular frameworks.
+# 3. Set up the database
+bin/rails db:create db:migrate
 
-## Submission Guide
+# 4. Obtain GeoLite2-City.mmdb
+#    Register free at https://dev.maxmind.com/geoip/geolite2-free-geolocation-data
+#    Download GeoLite2-City.mmdb and place it at the project root:
+cp /path/to/GeoLite2-City.mmdb .
+#    Or set a custom path via environment variable:
+#    export GEOIP_DB_PATH=/path/to/GeoLite2-City.mmdb
 
-- Your submission should include a **README** that includes at least an
-  - installation guide
-  - dependencies and other relevant information (such as scaffolding tools)
-  - **deployed application URL**
+# 5. Start the development server
+bin/dev
+```
 
-- We do not expect candidates to take more than 2 weeks to complete the assignment. Most candidates are able to complete the assignment in half the allocated time.
-- **Your submission should not aim to be exhaustive** - your submission should succinctly illustrate your depth and breadth of experience corresponding to the job level expectations for your application.
-- Your submission should be **publicly accessible for read**
-- Your submission will be used as a **foundation for the next/final round** of interview.
-- You may use our [stackshare.io](https://stackshare.io/coingecko) profile as a point of reference.
+The app will be available at `http://localhost:3000`.
+
+### Running tests
+
+```bash
+bin/rails test
+```
+
+### Linting
+
+```bash
+bin/rubocop --autocorrect
+```
+
+---
+
+## Dependencies
+
+| Gem | Purpose |
+|---|---|
+| `rails 8.1.3` | Web framework |
+| `sqlite3` | Database adapter |
+| `puma` | Web server |
+| `turbo-rails` | Hotwire Turbo — SPA-like navigation without a JS framework |
+| `stimulus-rails` | Hotwire Stimulus — lightweight JS controllers (copy button) |
+| `tailwindcss-rails` | Utility-first CSS, compiled at build time |
+| `nokogiri` | HTML parsing for `<title>` tag extraction |
+| `maxminddb` | MaxMind GeoLite2 `.mmdb` local IP geolocation lookups |
+| `rack-attack` | Rate limiting middleware — throttles `POST /links` per IP |
+| `propshaft` | Asset pipeline |
+
+**Scaffolding tools used:**
+- `rails new` with default Hotwire stack
+- `bin/rails generate migration` for schema changes
+- `tailwindcss-rails` install generator
+- Dokku for production deployment
+
+---
+
+## Architecture
+
+### Data model
+
+```
+short_urls
+  slug        string  unique, ≤ 15 chars, Base62
+  target_url  string  http/https only
+  title       string  fetched at creation time
+  created_at
+
+visits
+  short_url_id  FK → short_urls
+  ip_address    string
+  country       string  (nullable — GeoIP failure stored as null)
+  city          string  (nullable)
+  clicked_at    datetime
+```
+
+### Service objects
+
+**`TitleFetcherService`** — fetches the `<title>` of the target URL using `Net::HTTP`. Follows up to 5 redirects, enforces 5s timeouts, reads at most 100 KB, and blocks requests to loopback/RFC1918/link-local addresses (SSRF mitigation). Returns `"(title unavailable)"` on any failure.
+
+**`GeolocateService`** — wraps a MaxMind GeoLite2 local `.mmdb` lookup. Returns `{ country:, city: }`. Catches all exceptions internally — a missing database never breaks the redirect path.
+
+### Routing
+
+```ruby
+root "links#new"                            # landing page
+resources :links, only: %i[new create show] # /links/new, POST /links, /links/:slug
+get "/reports" => "reports#index"           # admin report
+get "/:slug"   => "redirect#show"           # catch-all — declared last to avoid shadowing
+```
+
+The `/:slug` wildcard is intentionally the last route so it cannot shadow `/links`, `/reports`, or `/up`.
+
+---
+
+## Short URL Algorithm
+
+Slugs are generated using `SecureRandom.alphanumeric` from the Base62 character set `[A-Za-z0-9]`, defaulting to 6 characters (hard cap 15).
+
+**Uniqueness:** checked before save. On collision, generation retries up to 5 times, then raises a user-visible `SlugExhaustedError`. This avoids silent failures or infinite loops.
+
+**Space:** 62^6 ≈ 57 billion combinations — negligible collision rate at small scale.
+
+**Redirect code:** 302 (not 301). A 301 is cached permanently by browsers — subsequent clicks would bypass the server, breaking visit tracking.
+
+**Limitations:**
+- Collision probability grows at very large scale (tens of millions of slugs)
+- Slugs are case-sensitive (`aB3k` ≠ `ab3k`)
+- Users cannot choose memorable custom paths
+
+**Workarounds:**
+- Increase default length to 8 chars for larger deployments (62^8 ≈ 218 trillion)
+- Allow optional custom slugs with a reserved-word blocklist (`/links`, `/reports`, `/up`, `/health`)
+
+---
+
+## Security
+
+| Concern | Mitigation |
+|---|---|
+| SSRF via title fetch | `TitleFetcherService` resolves hostname to IP before connecting; blocks loopback, RFC1918, and link-local ranges |
+| URL scheme injection | `ShortUrl` validates `target_url` scheme against allowlist (`http`, `https`); rejects `javascript:`, `data:`, `file:` etc. |
+| Open redirect | `RedirectController` only redirects to the stored `target_url` — never to a query parameter |
+| XSS | Standard ERB escaping throughout; `html_safe` never called on user-controlled data |
+| CSRF | Rails default `protect_from_forgery` — not disabled |
+| Slug spam / DoS | `rack-attack` throttles `POST /links` to 10 requests/minute per IP |
+| Transport security | TLS via Let's Encrypt (auto-renewing); HSTS enabled (max-age ~6 months) |
+
+---
+
+## Scalability
+
+**Current constraints (SQLite, single process):**
+- SQLite handles ~100k slugs and moderate concurrent reads without issue; write concurrency is limited by SQLite's single-writer model
+- Puma is configured with 3 threads; RAM on the e2-micro (~1 GB) is the practical concurrency ceiling
+- Title fetching is synchronous at creation time — slow upstream pages block the create request for up to 5s
+
+**Path to scale:**
+- Swap SQLite for Postgres to unlock concurrent writes and connection pooling
+- Move title fetching to a background job (Solid Queue is already in the Gemfile) to make creation instant
+- Add a database index on `visits.clicked_at` if time-range queries are introduced
+- Slug space scales by increasing default length (6 → 8 chars = 218 trillion combinations)
+
+---
+
+## Deployment
+
+Deployed on **GCP Compute Engine e2-micro** (free tier, `us-central1-a`) using **Dokku** as the PaaS layer.
+
+- Dokku builds the Docker image on the VM from the `Dockerfile` on every `git push dokku main`
+- SQLite database persisted at `/var/lib/dokku/data/storage/url-shortener`, bind-mounted into the container at `/rails/storage`
+- `db:migrate` runs automatically via the `release` phase in `Procfile`
+- TLS certificate issued by Let's Encrypt via `dokku-letsencrypt`; auto-renewed via cron
+- Secrets set via `dokku config:set` (never committed to git)
+
+---
+
+## Test Coverage
+
+55 tests, 0 failures across:
+
+- **Model unit tests** — `ShortUrl` validations, slug generation (charset, length, uniqueness retry, exhaustion error), `to_param` override
+- **Service unit tests** — `TitleFetcherService` (happy path, timeout, non-HTML, SSRF block, oversized response) and `GeolocateService` (happy path, lookup failure) — all HTTP calls stubbed, no real network in CI
+- **Request/integration tests** — full HTTP stack via `ActionDispatch::IntegrationTest`: create flow, redirect + visit recording, 404 on unknown slug, stats page, global report, rate limiting
