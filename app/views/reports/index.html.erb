@@ -1,52 +1,71 @@
-<h1 class="text-2xl font-bold mb-2">Global Report</h1>
-<p class="text-sm font-bold text-gray-700 mb-6">Total clicks: <%= @total_clicks %></p>
+<% content_for :main_class, "site-main--wide" %>
 
-<% if @total_clicks == 0 %>
-  <p class="text-sm text-gray-500">No visits yet.</p>
+<h1 class="page-title">Reports</h1>
+
+<% if @all_links.any? %>
+  <div class="section-title">All links</div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Slug</th>
+          <th>Short URL</th>
+          <th>Target URL</th>
+          <th class="col-right">Clicks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @all_links.each do |link| %>
+          <tr>
+            <td class="mono">
+              <%= link_to link.slug, link_path(link) %>
+            </td>
+            <td class="mono">
+              <%= link_to short_url_redirect_url(slug: link.slug),
+                          short_url_redirect_url(slug: link.slug),
+                          target: "_blank", rel: "noopener noreferrer" %>
+            </td>
+            <td style="max-width: 18rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              <%= link.target_url %>
+            </td>
+            <td class="col-right"><%= link.click_count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if @top_countries.any? %>
+    <div class="section-gap">
+      <div class="section-title">Top countries</div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th class="col-right">Visits</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @top_countries.each do |country, count| %>
+              <tr>
+                <td><%= country %></td>
+                <td class="col-right"><%= count %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="section-gap">
+    <div class="stats-meta">
+      <span class="click-count"><%= @total_clicks %></span>
+      <span class="click-label">total <%= @total_clicks == 1 ? "click" : "clicks" %> across all links</span>
+    </div>
+  </div>
+
 <% else %>
-  <section class="mb-10">
-    <h2 class="text-lg font-semibold mb-3">Top Links</h2>
-    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-      <table class="min-w-full divide-y divide-gray-200 text-sm">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-4 py-3 text-left font-medium text-gray-600">Slug</th>
-            <th class="px-4 py-3 text-left font-medium text-gray-600">Target URL</th>
-            <th class="px-4 py-3 text-right font-medium text-gray-600">Clicks</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-100">
-          <% @top_links.each do |link| %>
-            <tr class="hover:bg-gray-50">
-              <td class="px-4 py-3 font-mono text-gray-700"><%= link_to link.slug, link_path(link), class: "text-indigo-600 hover:underline" %></td>
-              <td class="px-4 py-3 text-gray-700 break-all max-w-xs"><%= link.target_url %></td>
-              <td class="px-4 py-3 text-right text-gray-700"><%= link.click_count %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section>
-    <h2 class="text-lg font-semibold mb-3">Top Countries</h2>
-    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-      <table class="min-w-full divide-y divide-gray-200 text-sm">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-4 py-3 text-left font-medium text-gray-600">Country</th>
-            <th class="px-4 py-3 text-right font-medium text-gray-600">Visits</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-100">
-          <% @top_countries.each do |country, count| %>
-            <tr class="hover:bg-gray-50">
-              <td class="px-4 py-3 text-gray-700"><%= country || "Unknown" %></td>
-              <td class="px-4 py-3 text-right text-gray-700"><%= count %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </section>
+  <p class="empty-state" style="text-align:left; padding: 0;">No links created yet.</p>
 <% end %>

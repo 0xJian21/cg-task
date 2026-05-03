@@ -1,1 +1,407 @@
 @import "tailwindcss";
+
+/* ── Theme tokens ─────────────────────────────────────────────── */
+
+[data-theme="dark"] {
+  --c-bg:           oklch(11% 0.008 265);
+  --c-surface:      oklch(15.5% 0.009 265);
+  --c-surface-hi:   oklch(20% 0.010 265);
+  --c-border:       oklch(24% 0.011 265);
+  --c-divider:      oklch(20% 0.009 265);
+  --c-text-1:       oklch(93% 0.005 265);
+  --c-text-2:       oklch(70% 0.007 265);
+  --c-text-3:       oklch(50% 0.007 265);
+  --c-accent:       oklch(67% 0.200 265);
+  --c-accent-hi:    oklch(73% 0.190 265);
+  --c-accent-ring:  oklch(67% 0.200 265 / 0.35);
+  --c-error:        oklch(64% 0.220 25);
+  --c-error-bg:     oklch(64% 0.220 25 / 0.12);
+  --c-error-border: oklch(64% 0.220 25 / 0.40);
+  --c-error-ring:   oklch(64% 0.220 25 / 0.35);
+  --c-success:      oklch(70% 0.150 160);
+  --c-accent-subtle: oklch(67% 0.200 265 / 0.12);
+}
+
+[data-theme="light"] {
+  --c-bg:           oklch(96.5% 0.004 265);
+  --c-surface:      oklch(99.5% 0.002 265);
+  --c-surface-hi:   oklch(95.5% 0.005 265);
+  --c-border:       oklch(87% 0.007 265);
+  --c-divider:      oklch(92.5% 0.004 265);
+  --c-text-1:       oklch(15% 0.008 265);
+  --c-text-2:       oklch(35% 0.008 265);
+  --c-text-3:       oklch(55% 0.008 265);
+  --c-accent:       oklch(50% 0.220 265);
+  --c-accent-hi:    oklch(44% 0.220 265);
+  --c-accent-ring:  oklch(50% 0.220 265 / 0.30);
+  --c-error:        oklch(50% 0.220 25);
+  --c-error-bg:     oklch(50% 0.220 25 / 0.08);
+  --c-error-border: oklch(50% 0.220 25 / 0.35);
+  --c-error-ring:   oklch(50% 0.220 25 / 0.30);
+  --c-success:      oklch(44% 0.150 160);
+  --c-accent-subtle: oklch(50% 0.220 265 / 0.10);
+}
+
+/* ── Base ─────────────────────────────────────────────────────── */
+
+html { background: var(--c-bg); }
+
+body {
+  min-height: 100vh;
+  background: var(--c-bg);
+  color: var(--c-text-1);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Site shell ───────────────────────────────────────────────── */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.site-nav {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nav-wordmark {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--c-accent);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.nav-link:hover { color: var(--c-accent-hi); }
+
+.nav-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  color: var(--c-text-3);
+  display: flex;
+  align-items: center;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.nav-toggle:hover {
+  color: var(--c-text-2);
+  background: var(--c-surface-hi);
+}
+
+.site-main {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2.75rem 1.25rem 5rem;
+}
+
+.site-main--wide { max-width: 58rem; }
+
+/* ── Typography ───────────────────────────────────────────────── */
+
+.page-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--c-text-1);
+  margin: 0 0 2rem;
+  line-height: 1.25;
+}
+
+.page-title .slug {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+  font-size: 1.125rem;
+  color: var(--c-text-3);
+  font-weight: 400;
+}
+
+.section-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--c-text-2);
+  margin: 0 0 0.75rem;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--c-text-3);
+  margin-bottom: 0.3125rem;
+}
+
+.field-value {
+  font-size: 0.875rem;
+  color: var(--c-text-1);
+  word-break: break-all;
+}
+
+.mono {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+  font-size: 0.8125rem;
+}
+
+/* ── Card ─────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 1.375rem 1.5rem;
+}
+
+.card-fields { display: grid; gap: 1rem; }
+
+/* ── Copy row ─────────────────────────────────────────────────── */
+
+.copy-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.copy-row .field-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.btn-primary {
+  background: var(--c-accent);
+  color: oklch(99% 0.001 265);
+  padding: 0.5625rem 1.25rem;
+}
+
+.btn-primary:hover { background: var(--c-accent-hi); }
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--c-accent);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--c-border);
+}
+
+.btn-secondary:hover {
+  background: var(--c-surface-hi);
+  border-color: var(--c-accent);
+}
+
+.btn-copy {
+  background: var(--c-surface-hi);
+  color: var(--c-text-2);
+  padding: 0.3125rem 0.6875rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid var(--c-border);
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.btn-copy:hover {
+  color: var(--c-text-1);
+  border-color: var(--c-accent);
+}
+
+.btn-copy[data-copied="true"] {
+  color: var(--c-success);
+  border-color: var(--c-success);
+}
+
+/* ── Form ─────────────────────────────────────────────────────── */
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--c-text-2);
+}
+
+.form-input {
+  width: 100%;
+  background: var(--c-surface);
+  color: var(--c-text-1);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  padding: 0.5625rem 0.8125rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-input::placeholder { color: var(--c-text-3); }
+
+.form-input:focus {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-ring);
+}
+
+.form-input.is-error {
+  border-color: var(--c-error);
+  box-shadow: 0 0 0 3px var(--c-error-ring);
+}
+
+.form-error {
+  font-size: 0.8125rem;
+  color: var(--c-error);
+}
+
+/* ── Table ────────────────────────────────────────────────────── */
+
+.table-wrap {
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.data-table thead { background: var(--c-surface-hi); }
+
+.data-table th {
+  padding: 0.625rem 1rem;
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--c-text-3);
+  white-space: nowrap;
+}
+
+.data-table th.col-right,
+.data-table td.col-right { text-align: right; }
+
+.data-table td {
+  padding: 0.625rem 1rem;
+  color: var(--c-text-2);
+  border-top: 1px solid var(--c-divider);
+  white-space: nowrap;
+}
+
+.data-table td a {
+  color: var(--c-accent);
+  text-decoration: none;
+}
+
+.data-table td a:hover {
+  color: var(--c-accent-hi);
+  text-decoration: underline;
+}
+
+.data-table tbody tr:hover td { background: var(--c-surface-hi); }
+
+/* ── Stats meta ───────────────────────────────────────────────── */
+
+.stats-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.click-count {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--c-text-1);
+  line-height: 1;
+}
+
+.click-label {
+  font-size: 0.8125rem;
+  color: var(--c-text-3);
+}
+
+/* ── Empty state ──────────────────────────────────────────────── */
+
+.empty-state {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--c-text-3);
+  font-size: 0.875rem;
+}
+
+/* ── Section spacing ──────────────────────────────────────────── */
+
+.section-gap { margin-top: 2rem; }
+
+/* ── Theme toggle icons ───────────────────────────────────────── */
+
+[data-theme="dark"]  .icon-for-dark  { display: block; }
+[data-theme="dark"]  .icon-for-light { display: none; }
+[data-theme="light"] .icon-for-dark  { display: none; }
+[data-theme="light"] .icon-for-light { display: block; }
+
+/* ── Mobile ───────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .site-main { padding: 1.75rem 1rem 4rem; }
+  .page-title { font-size: 1.125rem; margin-bottom: 1.5rem; }
+  .card { padding: 1rem 1.125rem; }
+  .copy-row { flex-direction: column; align-items: flex-start; }
+  .btn-copy { align-self: flex-start; }
+  .site-main--wide { max-width: 100%; }
+}

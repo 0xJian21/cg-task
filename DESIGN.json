@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-03T00:00:00Z",
+  "title": "Design System: URL Shortener",
+  "extensions": {
+    "colorMeta": {
+      "signal-blue":     { "role": "primary",  "displayName": "Signal Blue",     "canonical": "#4f46e5", "tonalRamp": ["#1e1b4b","#312e81","#3730a3","#4338ca","#4f46e5","#6366f1","#818cf8","#e0e7ff"] },
+      "signal-blue-hover": { "role": "primary", "displayName": "Signal Blue Hover", "canonical": "#4338ca", "tonalRamp": ["#1e1b4b","#312e81","#3730a3","#4338ca","#4f46e5","#6366f1","#818cf8","#e0e7ff"] },
+      "surface-white":   { "role": "neutral",  "displayName": "Surface White",   "canonical": "#ffffff", "tonalRamp": ["#111827","#374151","#6b7280","#9ca3af","#d1d5db","#e5e7eb","#f3f4f6","#ffffff"] },
+      "surface-subtle":  { "role": "neutral",  "displayName": "Surface Subtle",  "canonical": "#f9fafb", "tonalRamp": ["#111827","#374151","#6b7280","#9ca3af","#d1d5db","#e5e7eb","#f3f4f6","#f9fafb"] },
+      "border-default":  { "role": "neutral",  "displayName": "Border Default",  "canonical": "#e5e7eb", "tonalRamp": ["#111827","#374151","#6b7280","#9ca3af","#d1d5db","#e5e7eb","#f3f4f6","#f9fafb"] },
+      "border-divider":  { "role": "neutral",  "displayName": "Border Divider",  "canonical": "#f3f4f6", "tonalRamp": ["#111827","#374151","#6b7280","#9ca3af","#d1d5db","#e5e7eb","#f3f4f6","#f9fafb"] },
+      "text-primary":    { "role": "neutral",  "displayName": "Text Primary",    "canonical": "#111827", "tonalRamp": ["#111827","#1f2937","#374151","#4b5563","#6b7280","#9ca3af","#d1d5db","#f9fafb"] },
+      "text-secondary":  { "role": "neutral",  "displayName": "Text Secondary",  "canonical": "#374151", "tonalRamp": ["#111827","#1f2937","#374151","#4b5563","#6b7280","#9ca3af","#d1d5db","#f9fafb"] },
+      "text-label":      { "role": "neutral",  "displayName": "Text Label",      "canonical": "#4b5563", "tonalRamp": ["#111827","#1f2937","#374151","#4b5563","#6b7280","#9ca3af","#d1d5db","#f9fafb"] },
+      "text-muted":      { "role": "neutral",  "displayName": "Text Muted",      "canonical": "#6b7280", "tonalRamp": ["#111827","#1f2937","#374151","#4b5563","#6b7280","#9ca3af","#d1d5db","#f9fafb"] },
+      "error":           { "role": "tertiary", "displayName": "Error Red",       "canonical": "#dc2626", "tonalRamp": ["#450a0a","#7f1d1d","#991b1b","#b91c1c","#dc2626","#ef4444","#fca5a5","#fee2e2"] }
+    },
+    "typographyMeta": {
+      "display":  { "displayName": "Display",  "purpose": "Page-level headings. One per page." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings within a page." },
+      "body":     { "displayName": "Body",     "purpose": "Running text, table cells, helper text. Max 65ch." },
+      "label":    { "displayName": "Label",    "purpose": "Uppercase key-value field labels in cards. The only uppercase treatment." },
+      "mono":     { "displayName": "Mono",     "purpose": "All system/user-generated strings: slugs, URLs, IPs, timestamps." }
+    },
+    "shadows": [
+      { "name": "ambient-low", "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)", "purpose": "White card and table surfaces on Surface Subtle (#f9fafb). One layer only." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Button hover, input focus, row hover. Duration 150ms." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single action button. Used for form submit and post-creation CTAs.",
+      "html": "<button class=\"ds-btn-primary\">Shorten URL</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; background: #4f46e5; color: #ffffff; padding: 8px 16px; font-size: 0.875rem; font-weight: 600; font-family: system-ui, -apple-system, sans-serif; border: none; border-radius: 6px; cursor: pointer; transition: background 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #4338ca; } .ds-btn-primary:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "URL input field on the create page.",
+      "html": "<input class=\"ds-input\" type=\"url\" placeholder=\"https://example.com\" />",
+      "css": ".ds-input { display: block; width: 100%; background: #ffffff; color: #111827; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; font-family: system-ui, -apple-system, sans-serif; transition: border-color 150ms cubic-bezier(0.4,0,0.2,1), box-shadow 150ms cubic-bezier(0.4,0,0.2,1); } .ds-input::placeholder { color: #6b7280; } .ds-input:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 1px rgba(79,70,229,0.3); } .ds-input.ds-input--error { border-color: #dc2626; box-shadow: 0 0 0 1px rgba(220,38,38,0.3); }"
+    },
+    {
+      "name": "Link Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Key-value summary card for short link details (post-create and stats page).",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card__field\"><p class=\"ds-card__label\">Short URL</p><p class=\"ds-card__value ds-card__value--mono\">https://sho.rt/abc123</p></div><div class=\"ds-card__field\"><p class=\"ds-card__label\">Target URL</p><p class=\"ds-card__value\">https://very-long-target-url.com/path/to/page</p></div></div>",
+      "css": ".ds-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); } .ds-card__field { margin-bottom: 12px; } .ds-card__field:last-child { margin-bottom: 0; } .ds-card__label { font-size: 0.75rem; font-weight: 500; font-family: system-ui, -apple-system, sans-serif; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin: 0 0 4px 0; } .ds-card__value { font-size: 0.875rem; font-family: system-ui, -apple-system, sans-serif; color: #111827; margin: 0; word-break: break-all; } .ds-card__value--mono { font-family: ui-monospace, 'Cascadia Code', Menlo, monospace; }"
+    },
+    {
+      "name": "Data Table",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Primary data container for visit logs and top-links report.",
+      "html": "<div class=\"ds-table-wrap\"><table class=\"ds-table\"><thead><tr><th>Timestamp</th><th>Country</th><th class=\"ds-table__right\">Clicks</th></tr></thead><tbody><tr><td class=\"ds-table__mono\">2026-05-03 12:00:00 UTC</td><td>Malaysia</td><td class=\"ds-table__right\">42</td></tr></tbody></table></div>",
+      "css": ".ds-table-wrap { border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); overflow: hidden; overflow-x: auto; } .ds-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; font-family: system-ui, -apple-system, sans-serif; } .ds-table thead tr { background: #f9fafb; } .ds-table th { padding: 12px 16px; text-align: left; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: #4b5563; } .ds-table td { padding: 12px 16px; color: #374151; border-top: 1px solid #f3f4f6; } .ds-table tbody tr:hover td { background: #f9fafb; } .ds-table__right { text-align: right; } .ds-table__mono { font-family: ui-monospace, 'Cascadia Code', Menlo, monospace; }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Top navigation. Two links, always visible.",
+      "html": "<header class=\"ds-nav\"><nav class=\"ds-nav__inner\"><a class=\"ds-nav__link\" href=\"/\">Home</a><a class=\"ds-nav__link\" href=\"/reports\">Reports</a></nav></header>",
+      "css": ".ds-nav { background: #ffffff; border-bottom: 1px solid #e5e7eb; } .ds-nav__inner { max-width: 48rem; margin: 0 auto; padding: 12px 16px; display: flex; gap: 24px; } .ds-nav__link { font-size: 0.875rem; font-weight: 500; font-family: system-ui, -apple-system, sans-serif; color: #4f46e5; text-decoration: none; transition: color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-nav__link:hover { color: #4338ca; }"
+    },
+    {
+      "name": "Error Message",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Inline field validation error.",
+      "html": "<p class=\"ds-field-error\">Please enter a valid URL.</p>",
+      "css": ".ds-field-error { font-size: 0.875rem; font-family: system-ui, -apple-system, sans-serif; color: #dc2626; margin: 4px 0 0 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Clean Ledger",
+    "overview": "This is a precision instrument. Every screen exists to complete one job and move the user on. The aesthetic draws from data-focused products like CoinGecko — white surfaces, subtle gray structure, one restrained accent color used only where action is required. Nothing competes for attention.\n\nThe system is light-mode only, built for use at any hour in any context. Data — slugs, URLs, click counts, geolocations — is presented in monospace or tight tabular layouts so it reads as factual, not styled.\n\nWhat this system explicitly rejects: crypto-neon aesthetics, gradient text, glassmorphism as decoration, generic SaaS-blue hero metrics, side-stripe accents on cards.",
+    "keyCharacteristics": [
+      "White-surface, gray-structure layout — depth through borders, not shadows",
+      "Single accent color used only on interactive elements",
+      "Monospace for all user-generated or system-generated strings",
+      "Labels in uppercase tracking — the only typographic texture permitted",
+      "Tables as the primary data container"
+    ],
+    "rules": [
+      { "name": "The One Signal Rule",    "body": "Signal Blue (#4f46e5) appears only on interactive elements. Never as a background tint, decorative stripe, or emphasis on static text.", "section": "colors" },
+      { "name": "The No-Tint Rule",       "body": "Cards use Surface White (#ffffff). Do not add blue or gray tints to card backgrounds.", "section": "colors" },
+      { "name": "The Mono-for-Data Rule", "body": "Any string the system generated or the user submitted renders in the mono stack. UI labels render in system sans.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "No element receives a shadow unless it is a white card or table container on a gray background.", "section": "elevation" }
+    ],
+    "dos": [
+      "Use Signal Blue (#4f46e5) exclusively on interactive elements.",
+      "Use monospace for every system-generated or user-submitted string.",
+      "Render table headers in uppercase with 0.05em letter-spacing.",
+      "Use Border Default (#e5e7eb) as the primary structural element.",
+      "Keep one heading per page.",
+      "Use Surface Subtle (#f9fafb) as the page background."
+    ],
+    "donts": [
+      "Don't use neon colors, gradient text, or glassmorphism.",
+      "Don't add a colored side-stripe (border-left > 1px) to cards or alerts.",
+      "Don't use Signal Blue as a background tint or emphasis on static text.",
+      "Don't nest cards.",
+      "Don't use more than Ambient Low shadow on any element.",
+      "Don't use uppercase or letter-spacing outside of key-value field labels.",
+      "Don't add decorative empty-state illustrations. A sentence in Text Muted is enough."
+    ]
+  }
+}
