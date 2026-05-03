@@ -1,6 +1,12 @@
 require "test_helper"
 
 class LinksControllerTest < ActionDispatch::IntegrationTest
+  test "GET / returns 200 and renders shorten form" do
+    get root_path
+    assert_response :success
+    assert_select "form"
+  end
+
   test "GET /links/new returns 200" do
     get new_link_path
     assert_response :success
