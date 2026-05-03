@@ -55,22 +55,28 @@ class LinksControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  test "GET /links/:id shows stats page with click count" do
+  test "GET /links/:slug shows stats page with click count" do
     su = ShortUrl.create!(slug: "testslg", target_url: "https://example.com", title: "Ex")
     Visit.create!(short_url: su, ip_address: "1.2.3.4", clicked_at: 2.hours.ago)
     Visit.create!(short_url: su, ip_address: "5.6.7.8", clicked_at: 1.hour.ago)
     get link_path(su)
+    assert_equal "/links/testslg", link_path(su)
     assert_response :success
     assert_match "Total clicks: 2", response.body
     assert_match "1.2.3.4", response.body
     assert_match "5.6.7.8", response.body
   end
 
-  test "GET /links/:id shows empty state when no visits" do
+  test "GET /links/:slug shows empty state when no visits" do
     su = ShortUrl.create!(slug: "abc123", target_url: "https://example.com", title: "Ex")
     get link_path(su)
     assert_response :success
     assert_match "No visits yet", response.body
+  end
+
+  test "GET /links/1 returns 404 when no slug named 1" do
+    get "/links/1"
+    assert_response :not_found
   end
 
   test "POST /links with invalid URL renders inline error, no top-level error_explanation block" do

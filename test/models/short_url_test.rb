@@ -58,6 +58,13 @@ class ShortUrlTest < ActiveSupport::TestCase
     assert su.errors[:slug].any?
   end
 
+  # --- to_param ---
+
+  test "to_param returns the slug" do
+    su = ShortUrl.new(slug: "abc123", target_url: "https://example.com")
+    assert_equal "abc123", su.to_param
+  end
+
   # --- slug generation ---
 
   test "generate_slug returns base62 string of default length 6" do

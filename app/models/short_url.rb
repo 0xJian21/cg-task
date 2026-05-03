@@ -27,6 +27,10 @@ class ShortUrl < ApplicationRecord
     raise SlugExhaustedError, "Could not generate a unique slug after #{MAX_RETRIES} attempts"
   end
 
+  def to_param
+    slug
+  end
+
   private
 
   def target_url_scheme
