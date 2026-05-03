@@ -16,7 +16,7 @@ class LinksController < ApplicationController
           target_url: target_url,
           title: TitleFetcherService.call(target_url)
         )
-        render :create
+        redirect_to link_path(@short_url)
       rescue ShortUrl::SlugExhaustedError
         @short_url.errors.add(:base, "Could not generate a unique short URL. Please try again.")
         render :new, status: :unprocessable_entity

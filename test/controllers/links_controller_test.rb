@@ -12,16 +12,16 @@ class LinksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "POST /links with valid URL creates record and stores fetched title" do
+  test "POST /links with valid URL creates record and redirects to stats page" do
     stub_method(TitleFetcherService, :call, ->(_url) { "Example Domain" }) do
       assert_difference "ShortUrl.count", 1 do
         post links_path, params: { short_url: { target_url: "https://example.com" } }
       end
-      assert_response :success
       su = ShortUrl.last
       assert_equal "https://example.com", su.target_url
       assert_match(/[A-Za-z0-9]{6}/, su.slug)
       assert_equal "Example Domain", su.title
+      assert_redirected_to link_path(su)
     end
   end
 
@@ -30,7 +30,9 @@ class LinksControllerTest < ActionDispatch::IntegrationTest
       assert_difference "ShortUrl.count", 1 do
         post links_path, params: { short_url: { target_url: "https://example.com" } }
       end
-      assert_equal "(title unavailable)", ShortUrl.last.title
+      su = ShortUrl.last
+      assert_equal "(title unavailable)", su.title
+      assert_redirected_to link_path(su)
     end
   end
 

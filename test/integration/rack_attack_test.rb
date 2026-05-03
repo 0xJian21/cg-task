@@ -19,7 +19,7 @@ class RackAttackTest < ActionDispatch::IntegrationTest
         post links_path,
           params: { short_url: { target_url: "https://example.com/#{i}" } },
           headers: { "REMOTE_ADDR" => "1.2.3.4" }
-        assert_response :success
+        assert_response :redirect
       end
 
       post links_path,
@@ -40,7 +40,7 @@ class RackAttackTest < ActionDispatch::IntegrationTest
       post links_path,
         params: { short_url: { target_url: "https://example.com/other" } },
         headers: { "REMOTE_ADDR" => "9.9.9.9" }
-      assert_response :success
+      assert_response :redirect
     end
   end
 end
