@@ -180,6 +180,47 @@ Deployed on **GCP Compute Engine e2-micro** (free tier, `us-central1-a`) using *
 
 ---
 
+## Extension 1: Querying Data from Decentralized Exchanges
+
+The full question brief and answers live in [`extensions-1/`](extensions-1/).
+
+| File | Description |
+|---|---|
+| `1-querying-dex-data.md` | Original question brief |
+| `1-querying-dex-data-answer.md` | cURL queries and sample responses for all four questions |
+| `schema.json` | UniswapV3 GraphQL schema retrieved via introspection query |
+
+### Summary of answers
+
+**Q1 — Schema introspection**
+GraphQL introspection query sent to the UniswapV3 subgraph endpoint; result saved as `schema.json`.
+
+**Q2 — 100 pools (basic)**
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ pools(first: 100) { id token0 { id symbol } token1 { id symbol } } }"}' \
+  "https://gateway.thegraph.com/api/<API_KEY>/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV"
+```
+
+**Q3 — 100 pools, highest liquidity, created in past week**
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ pools(first: 100, orderBy: liquidity, orderDirection: desc, where: { createdAtTimestamp_gt: 1777161600 }) { id token0 { id symbol } token1 { id symbol } } }"}' \
+  "https://gateway.thegraph.com/api/<API_KEY>/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV"
+```
+
+**Q4 — USDC/WETH pool full attributes**
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ pool(id: \"0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8\") { id token0 { id symbol derivedETH } token1 { id symbol derivedETH } liquidity token0Price token1Price volumeToken0 volumeToken1 volumeUSD totalValueLockedUSD } }"}' \
+  "https://gateway.thegraph.com/api/<API_KEY>/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV"
+```
+
+---
+
 ## Test Coverage
 
 55 tests, 0 failures across:
